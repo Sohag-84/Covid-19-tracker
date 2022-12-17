@@ -1,7 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:covid_19_tracker/models/world_states_model.dart';
+import 'package:covid_19_tracker/services/sates_services.dart';
 import 'package:covid_19_tracker/widgets/custom_row.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class WorldStateScreen extends StatefulWidget {
@@ -31,6 +34,8 @@ class _WorldStateScreenState extends State<WorldStateScreen>
     super.dispose();
   }
 
+  StateServices services = StateServices();
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -43,33 +48,90 @@ class _WorldStateScreenState extends State<WorldStateScreen>
           child: Column(
             children: [
               SizedBox(height: height * 0.01),
-              PieChart(
-                dataMap: const {
-                  'Total': 210,
-                  "Recovered": 200,
-                  "Death": 10,
+              FutureBuilder(
+                future: services.fetchWorldStatesRecord(),
+                builder: (context, AsyncSnapshot<WorldStatesModel> snapshot) {
+                  if (!snapshot.hasData) {
+                    return Expanded(
+                      flex: 1,
+                      child: SpinKitFadingCircle(
+                        controller: _controller,
+                        color: Colors.white,
+                        size: 50,
+                      ),
+                    );
+                  } else {
+                    var data = snapshot.data;
+                    return Column(
+                      children: [
+                        PieChart(
+                          dataMap: {
+                            'Total': double.parse(data!.cases.toString()),
+                            "Recovered":
+                                double.parse(data.recovered.toString()),
+                            "Death": double.parse(data.deaths.toString()),
+                          },
+                          chartValuesOptions: ChartValuesOptions(
+                            showChartValuesInPercentage: true,
+                          ),
+                          chartRadius: width / 2.3,
+                          animationDuration: Duration(milliseconds: 1200),
+                          colorList: colorList,
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: height * 0.02),
+                          child: Card(
+                            child: Column(
+                              children: [
+                                customRow(
+                                  title: "Total",
+                                  value: data.cases.toString(),
+                                ),
+                                customRow(
+                                  title: "Deaths",
+                                  value: data.deaths.toString(),
+                                ),
+                                customRow(
+                                  title: "Recovered",
+                                  value: data.recovered.toString(),
+                                ),
+                                customRow(
+                                  title: "Active",
+                                  value: data.active.toString(),
+                                ),
+                                customRow(
+                                  title: "Critical",
+                                  value: data.critical.toString(),
+                                ),
+                                customRow(
+                                  title: "Today Cases",
+                                  value: data.todayCases.toString(),
+                                ),
+                                customRow(
+                                  title: "Today Deaths",
+                                  value: data.todayDeaths.toString(),
+                                ),
+                                customRow(
+                                  title: "Today Recovered",
+                                  value: data.todayRecovered.toString(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Color(0xFF1aa260),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(child: Text("Track Contries")),
+                        ),
+                      ],
+                    );
+                  }
                 },
-                chartRadius: width / 2.3,
-                animationDuration: Duration(milliseconds: 1200),
-                colorList: colorList,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(vertical:height*0.06),
-                child: Card(
-                  child: Column(children: [
-                    customRow(title: "Total", value: "200"),
-                    customRow(title: "Total", value: "200"),
-                    customRow(title: "Total", value: "200"),
-                  ],),
-                ),
-              ),
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Color(0xFF1aa260),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(child: Text("Track Contries")),
               ),
             ],
           ),
