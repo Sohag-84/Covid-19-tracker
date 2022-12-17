@@ -2,6 +2,7 @@
 
 import 'package:covid_19_tracker/models/world_states_model.dart';
 import 'package:covid_19_tracker/services/sates_services.dart';
+import 'package:covid_19_tracker/views/country_list_screen.dart';
 import 'package:covid_19_tracker/widgets/custom_row.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -120,13 +121,21 @@ class _WorldStateScreenState extends State<WorldStateScreen>
                             ),
                           ),
                         ),
-                        Container(
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF1aa260),
-                            borderRadius: BorderRadius.circular(10),
+                        InkWell(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CountryListScreen(),
+                            ),
                           ),
-                          child: Center(child: Text("Track Contries")),
+                          child: Container(
+                            height: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xFF1aa260),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Center(child: Text("Track Contries")),
+                          ),
                         ),
                       ],
                     );
