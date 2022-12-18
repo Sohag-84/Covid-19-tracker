@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:covid_19_tracker/services/sates_services.dart';
+import 'package:covid_19_tracker/views/details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -28,9 +29,7 @@ class _CountryListScreenState extends State<CountryListScreen> {
             TextFormField(
               controller: _searchController,
               onChanged: (value) {
-                setState(() {
-                  
-                });
+                setState(() {});
               },
               decoration: InputDecoration(
                   hintText: "Search with country name",
@@ -83,36 +82,78 @@ class _CountryListScreenState extends State<CountryListScreen> {
                         String name = snapshot.data![index]['country'];
 
                         if (_searchController.text.isEmpty) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                leading: Image(
-                                  height: 50,
-                                  width: 50,
-                                  image: NetworkImage(data['flag']),
+                          return InkWell(
+                            onTap: () {
+                              var info = snapshot.data![index];
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailsScreen(
+                                    image: info['countryInfo']['flag'],
+                                    name: info['country'],
+                                    totalCases: info['cases'],
+                                    totalDeaths: info['deaths'],
+                                    totalRecovered: info['recovered'],
+                                    active: info['active'],
+                                    critical: info['critical'],
+                                    todayRecovered: info['todayRecovered'],
+                                    test: info['tests'],
+                                  ),
                                 ),
-                                title: Text(snapshot.data![index]['country']),
-                                subtitle: Text(
-                                    snapshot.data![index]['cases'].toString()),
-                              ),
-                            ],
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Image(
+                                    height: 50,
+                                    width: 50,
+                                    image: NetworkImage(data['flag']),
+                                  ),
+                                  title: Text(snapshot.data![index]['country']),
+                                  subtitle: Text(snapshot.data![index]['cases']
+                                      .toString()),
+                                ),
+                              ],
+                            ),
                           );
                         } else if (name
                             .toLowerCase()
                             .contains(_searchController.text.toLowerCase())) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                leading: Image(
-                                  height: 50,
-                                  width: 50,
-                                  image: NetworkImage(data['flag']),
+                          return InkWell(
+                            onTap: () {
+                              var info = snapshot.data![index];
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailsScreen(
+                                    image: info['countryInfo']['flag'],
+                                    name: info['country'],
+                                    totalCases: info['cases'],
+                                    totalDeaths: info['deaths'],
+                                    totalRecovered: info['recovered'],
+                                    active: info['active'],
+                                    critical: info['critical'],
+                                    todayRecovered: info['todayRecovered'],
+                                    test: info['tests'],
+                                  ),
                                 ),
-                                title: Text(snapshot.data![index]['country']),
-                                subtitle: Text(
-                                    snapshot.data![index]['cases'].toString()),
-                              ),
-                            ],
+                              );
+                            },
+                            child: Column(
+                              children: [
+                                ListTile(
+                                  leading: Image(
+                                    height: 50,
+                                    width: 50,
+                                    image: NetworkImage(data['flag']),
+                                  ),
+                                  title: Text(snapshot.data![index]['country']),
+                                  subtitle: Text(
+                                      snapshot.data![index]['cases'].toString()),
+                                ),
+                              ],
+                            ),
                           );
                         } else {
                           return Container();
