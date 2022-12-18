@@ -27,6 +27,11 @@ class _CountryListScreenState extends State<CountryListScreen> {
           children: [
             TextFormField(
               controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  
+                });
+              },
               decoration: InputDecoration(
                   hintText: "Search with country name",
                   contentPadding: EdgeInsets.symmetric(horizontal: 20),
@@ -74,20 +79,44 @@ class _CountryListScreenState extends State<CountryListScreen> {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         var data = snapshot.data![index]['countryInfo'];
-                        return Column(
-                          children: [
-                            ListTile(
-                              leading: Image(
-                                height: 50,
-                                width: 50,
-                                image: NetworkImage(data['flag']),
+
+                        String name = snapshot.data![index]['country'];
+
+                        if (_searchController.text.isEmpty) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                leading: Image(
+                                  height: 50,
+                                  width: 50,
+                                  image: NetworkImage(data['flag']),
+                                ),
+                                title: Text(snapshot.data![index]['country']),
+                                subtitle: Text(
+                                    snapshot.data![index]['cases'].toString()),
                               ),
-                              title: Text(snapshot.data![index]['country']),
-                              subtitle: Text(
-                                  snapshot.data![index]['cases'].toString()),
-                            ),
-                          ],
-                        );
+                            ],
+                          );
+                        } else if (name
+                            .toLowerCase()
+                            .contains(_searchController.text.toLowerCase())) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                leading: Image(
+                                  height: 50,
+                                  width: 50,
+                                  image: NetworkImage(data['flag']),
+                                ),
+                                title: Text(snapshot.data![index]['country']),
+                                subtitle: Text(
+                                    snapshot.data![index]['cases'].toString()),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Container();
+                        }
                       },
                     );
                   }
